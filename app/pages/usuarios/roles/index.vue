@@ -34,6 +34,10 @@ const itemsBread = ref([
   },
 ]);
 
+useHead({
+  title: `Todos los roles`,
+});
+
 onBeforeMount(async () => {
   try {
     const response = await $fetch<{

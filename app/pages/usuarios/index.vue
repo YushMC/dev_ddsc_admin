@@ -17,7 +17,7 @@ interface reponse {
 const all_users = ref<reponse[]>([]);
 const globalFilter = ref();
 const api_url = useRuntimeConfig().public.api_url;
-
+const { token_original } = useAccounts();
 const UAvatar = resolveComponent("UAvatar");
 const UCheckBox = resolveComponent("UCheckbox");
 const UButton = resolveComponent("UButton");
@@ -170,13 +170,22 @@ const paginatedItems = computed(() => {
   return all_users.value.slice(start, end);
 });
 
+useHead({
+  title: `Todos los usuarios`,
+});
+
 onBeforeMount(async () => {
   try {
     const response = await $fetch<{
       response: string;
       totoal_rows: number;
       results: reponse[];
-    }>(`${api_url}/users-admin`);
+    }>(`${api_url}/users-admin`, {
+      method: "GET",
+      headers: {
+        Authorization: token_original.value,
+      },
+    });
 
     all_users.value = response.results;
   } catch (error) {}

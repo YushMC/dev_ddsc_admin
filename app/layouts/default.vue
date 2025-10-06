@@ -16,7 +16,7 @@
 
         <template #right>
           <section class="fl_start">
-            <USlideover title="Notificaciones">
+            <USlideover title="Notificaciones" v-if="false">
               <UChip color="error" :show="true">
                 <UButton
                   color="neutral"
@@ -31,6 +31,9 @@
                 </section>
               </template>
             </USlideover>
+            <UButton icon="i-lucide-log-out" color="error" @click="closeSession"
+              >Cerrar Sesión</UButton
+            >
             <UColorModeSelect />
           </section>
         </template>
@@ -55,6 +58,7 @@
 </template>
 
 <script setup lang="ts">
+const { close } = useLogout();
 const items = ref([
   [
     {
@@ -94,6 +98,11 @@ const items = ref([
     },
   ],
 ]);
+
+const closeSession = async () => {
+  await close();
+  window.location.reload();
+};
 </script>
 
 <style scoped>

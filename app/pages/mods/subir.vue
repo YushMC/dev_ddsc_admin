@@ -2,7 +2,6 @@
 useHead({
   title: "Subir Mod",
 });
-const { role_permissions, token_original } = useAccounts();
 const router = useRouter();
 
 import type { StepperItem, AccordionItem, SelectMenuItem } from "@nuxt/ui";

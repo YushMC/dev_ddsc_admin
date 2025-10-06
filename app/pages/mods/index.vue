@@ -178,6 +178,10 @@ const itemsBread = ref([
   },
 ]);
 
+useHead({
+  title: `Todos los mods`,
+});
+
 onBeforeMount(async () => {
   try {
     const response = await $fetch<{

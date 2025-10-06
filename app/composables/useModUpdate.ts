@@ -329,6 +329,44 @@ export const useModUpdate = () => {
     }
   };
 
+  const addSaga = async (id: number, data: any) => {
+    try {
+      const reponse = await $fetch<{ message: string }>(
+        `${api_url}/add-mod-saga`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: token_original.value,
+          },
+          body: {
+            id_mod: id,
+            id_saga: data.saga,
+            id_tipo: data.tipo_saga,
+          },
+        }
+      );
+      return { sucess: true, message: reponse.message };
+    } catch (error: any) {
+      let msg = "Error desconocido";
+
+      // Si viene como string JSON
+      if (typeof error?.data === "string") {
+        try {
+          const parsed = JSON.parse(error.data);
+          msg = parsed.error ?? msg;
+        } catch {
+          msg = error.data;
+        }
+      }
+
+      // Si viene ya como objeto
+      else if (typeof error?.data === "object" && error?.data?.error) {
+        msg = error.data.error;
+      }
+      return { sucess: false, message: msg };
+    }
+  };
+
   return {
     data_mod,
     fetchMod,
@@ -338,5 +376,6 @@ export const useModUpdate = () => {
     updatePutAlls,
     updateCategories,
     updateImages,
+    addSaga,
   };
 };

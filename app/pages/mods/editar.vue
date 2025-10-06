@@ -8,6 +8,7 @@ const {
   updatePutAlls,
   updateCategories,
   updateImages,
+  addSaga,
 } = useModUpdate();
 const toast = useToast();
 const route = useRoute().query.slug;
@@ -179,6 +180,11 @@ const changePortada = async () => {
   showMessage(response);
 };
 
+const addNewSaga = async () => {
+  const response = await addSaga(data_mod.value.id, options_all_selected.value);
+  showMessage(response);
+};
+
 const openWindowMod = () => {
   if (data_mod.value.isPublic)
     window.open(`http://191.101.251.98/mods/${data_mod.value.slug}`, "_blank");
@@ -200,6 +206,9 @@ const searchIdModInSagas = async (id: number) => {
     }
   } catch (error) {}
 };
+useHead({
+  title: `Editar mod ${data_mod.value.nombre}`,
+});
 
 watch(
   () => route,
@@ -225,6 +234,9 @@ watch(
       generos: [],
     };
     setDataReadySeledted();
+    useHead({
+      title: `Editar mod ${data_mod.value.nombre}`,
+    });
   }
 );
 
@@ -329,7 +341,7 @@ onBeforeMount(async () => {
         />
       </div>
       <div class="fl_column">
-        <div class="glass_card fl_column">
+        <div class="glass_card fl_column" v-if="data_mod.generos.length === 0">
           <UFormField label="Editar Generos" size="xl" error="Proximamente">
             <USelect
               color="info"
@@ -457,14 +469,21 @@ onBeforeMount(async () => {
       </div>
     </section>
     <USeparator label="Categorias" />
+    <UAlert
+      title="IMPORTANTE"
+      color="warning"
+      icon="i-lucide-triangle-alert"
+      description="Las categorias no pueden ser eliminadas despues de haber sido agregadas, solo pueden añadirse nuevas categorias."
+    />
+    <UAlert
+      v-if="options_all_selected.saga === 0"
+      title="IMPORTANTE"
+      color="warning"
+      icon="i-lucide-triangle-alert"
+      description="Los mods no puede ser cambiada de sagas despues de haber sido agregadas por primera vez, solo cambia esta información en caso de ser necesario."
+    />
     <section class="fl_evenly">
       <div class="glass_card fl_column">
-        <UAlert
-          title="IMPORTANTE"
-          color="warning"
-          icon="i-lucide-triangle-alert"
-          description="Las categorias no pueden ser actualizadas despues de haber sido agregadas, solo pueden añadirse nuevas categorias."
-        />
         <UFormField label="Categoria" size="xl">
           <USelect
             color="info"
@@ -484,41 +503,37 @@ onBeforeMount(async () => {
           >Guardar</UButton
         >
       </div>
-      <div class="glass_card fl_column">
-        <UAlert
-          v-if="options_all_selected.saga === 0"
-          title="IMPORTANTE"
-          color="warning"
-          icon="i-lucide-triangle-alert"
-          description="Los mods no puede ser cambiada de sagas despues de haber sido agregadas por primera vez, solo cambia esta información en caso de ser necesario."
-        />
-        <UFormField label="Saga" size="xl">
-          <USelect
-            color="info"
-            v-model="options_all_selected.saga"
-            value-key="id"
-            :items="optionsForSelects.sagas"
-            autoresize
-            class="w-full"
-            :disabled="options_all_selected.saga !== 0"
-          />
-        </UFormField>
-        <UButton size="xl" icon="i-lucide-save" color="neutral"
-          >Guardar</UButton
-        >
-      </div>
-      <div class="glass_card fl_column" v-if="options_all_selected.saga !== 0">
-        <UFormField label="Tipo" size="xl">
-          <USelect
-            color="info"
-            v-model="options_all_selected.tipo_saga"
-            value-key="id"
-            :items="optionsForSelects.tiposagas"
-            autoresize
-            class="w-full"
-          />
-        </UFormField>
-        <UButton size="xl" icon="i-lucide-save" color="neutral"
+      <div class="glass_card fl_center" style="width: fit-content">
+        <div class="glass_card fl_column">
+          <UFormField label="Saga" size="xl">
+            <USelect
+              color="info"
+              v-model="options_all_selected.saga"
+              value-key="id"
+              :items="optionsForSelects.sagas"
+              autoresize
+              class="w-full"
+              :disabled="options_all_selected.saga !== 0"
+            />
+          </UFormField>
+        </div>
+        <div class="glass_card fl_column">
+          <UFormField label="Tipo" size="xl">
+            <USelect
+              color="info"
+              v-model="options_all_selected.tipo_saga"
+              value-key="id"
+              :items="optionsForSelects.tiposagas"
+              autoresize
+              class="w-full"
+            />
+          </UFormField>
+        </div>
+        <UButton
+          size="xl"
+          icon="i-lucide-save"
+          color="neutral"
+          @click="addNewSaga"
           >Guardar</UButton
         >
       </div>

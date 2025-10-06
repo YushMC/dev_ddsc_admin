@@ -34,20 +34,17 @@ const itemsBread = ref([
     to: "/mods/sagas",
   },
 ]);
-const addCategory = async () => {
+const addSaga = async () => {
   try {
-    const response = await $fetch<{ message: string }>(
-      `${api_url}/add-category`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: token_original.value,
-        },
-        body: {
-          category_name: saga.value,
-        },
-      }
-    );
+    const response = await $fetch<{ message: string }>(`${api_url}/add-saga`, {
+      method: "POST",
+      headers: {
+        Authorization: token_original.value,
+      },
+      body: {
+        saga_name: saga.value,
+      },
+    });
 
     toast.add({
       title: "Correcto",
@@ -129,6 +126,10 @@ const items = ref<SelectItem[]>([
 ]);
 
 onBeforeMount(async () => await getCategories());
+
+useHead({
+  title: `Todas las sagas`,
+});
 </script>
 
 <template>
@@ -146,7 +147,9 @@ onBeforeMount(async () => await getCategories());
                 v-model="saga"
               />
             </UFormField>
-            <UButton @click="" icon="i-lucide-library-big">Agregar</UButton>
+            <UButton @click="addSaga" icon="i-lucide-library-big"
+              >Agregar</UButton
+            >
           </section>
         </template>
       </UModal>

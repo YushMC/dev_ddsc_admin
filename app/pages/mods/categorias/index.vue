@@ -100,6 +100,10 @@ const getCategories = async () => {
   } catch (error) {}
 };
 
+useHead({
+  title: `Categorias de mods`,
+});
+
 onBeforeMount(async () => await getCategories());
 </script>
 
