@@ -31,6 +31,10 @@
 <script setup lang="ts">
 const { token_data } = useAccounts();
 const router = useRouter();
+
+useHead({
+  title: "Panel",
+});
 </script>
 
 <style scoped>

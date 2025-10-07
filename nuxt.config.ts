@@ -14,6 +14,22 @@ export default defineNuxtConfig({
       api_url: "https://api.dokidokispanish.club",
     },
   },
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: "es",
+      },
+      titleTemplate: "%s - Doki Doki Spanish Club ADMIN",
+      charset: "utf-8",
+      link: [
+        {
+          rel: "icon favicon",
+          type: "image/png",
+          href: "/images/Logo_DDSC.png",
+        },
+      ],
+    },
+  },
   routeRules: {
     "/": { ssr: false },
     "/login": { ssr: false },
