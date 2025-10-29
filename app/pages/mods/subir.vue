@@ -88,6 +88,11 @@ const itemAccordion = [
     icon: "i-lucide-user-x",
     slot: "tradno" as const,
   },
+  {
+    label: "Porteador",
+    icon: "i-lucide-user-x",
+    slot: "port" as const,
+  },
 ] satisfies AccordionItem[];
 
 const itemsSaga = [
@@ -107,6 +112,7 @@ const mod_info = ref<ModInterfaceToUpload>({
   personaje: 1,
   isNSFW: 0,
   tipo: 1,
+  id_porteador: 0,
   generos: [1],
   creadores: [],
   id_saga: 0,
@@ -568,6 +574,16 @@ const upload = async () => {
                 <UInputTags
                   color="info"
                   v-model="traductores_no_register"
+                  class="w-full"
+                />
+              </UFormField>
+            </template>
+            <template #port v-if="mod_info.android.trim() !== ''">
+              <UFormField label="Selecciona el porteador de la lista" size="xl">
+                <UInputMenu
+                  color="info"
+                  v-model="mod_info.id_porteador"
+                  :items="optionsForSelects.people"
                   class="w-full"
                 />
               </UFormField>
