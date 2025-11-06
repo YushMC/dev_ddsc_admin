@@ -12,6 +12,8 @@
   "dependencies": {
     "@nuxt/image": "1.11.0",
     "@nuxt/ui": "4.0.0",
+    "@vueup/vue-quill": "^1.2.0",
+    "dompurify": "^3.3.0",
     "nuxt": "4.1.2",
     "typescript": "5.9.2",
     "vue": "3.5.21",

@@ -67,7 +67,7 @@ const loginfetch = async () => {
 };
 
 const redirectToMainPage = () => {
-  window.open("http://191.101.251.98");
+  window.open("https://new.dokidokispanish.club");
 };
 
 useHead({

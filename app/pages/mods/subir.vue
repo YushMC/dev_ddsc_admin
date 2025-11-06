@@ -2,14 +2,17 @@
 useHead({
   title: "Subir Mod",
 });
-const router = useRouter();
 
 import type { StepperItem, AccordionItem, SelectMenuItem } from "@nuxt/ui";
+import DOMPurify from "dompurify";
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 const toast = useToast();
 const { fetchAllUsers } = useAccounts();
 const { fetchOptions } = OptionsMods();
 const { sendMod } = useModUpload();
 const active = ref(0);
+const showGif = ref(false);
 const traductores_register = ref<SelectMenuItem[]>([]);
 const traductores_no_register = ref<string[]>([]);
 const creators_register = ref<SelectMenuItem[]>([]);
@@ -66,34 +69,6 @@ const items = ref([
     to: "/mods/subir",
   },
 ]);
-
-const itemAccordion = [
-  {
-    label: "CREADOR(ES) existe en DDSC",
-    icon: "i-lucide-user",
-    slot: "user" as const,
-  },
-  {
-    label: "CREADOR(ES) NO existe en DDSC",
-    icon: "i-lucide-user-x",
-    slot: "userno" as const,
-  },
-  {
-    label: "TRADUCTOR(ES) existe en DDSC",
-    icon: "i-lucide-user",
-    slot: "trad" as const,
-  },
-  {
-    label: "TRADDUCTOR(ES) NO existe en DDSC",
-    icon: "i-lucide-user-x",
-    slot: "tradno" as const,
-  },
-  {
-    label: "Porteador",
-    icon: "i-lucide-user-x",
-    slot: "port" as const,
-  },
-] satisfies AccordionItem[];
 
 const itemsSaga = [
   {
@@ -297,6 +272,10 @@ const setFinalTradutors = () => {
 };
 
 const upload = async () => {
+  showGif.value = true;
+  mod_info.value.descripcion = DOMPurify.sanitize(
+    mod_info.value.descripcion ?? "Sin descripción"
+  );
   toast.add({
     title: "Procesando",
     description: "Se esta guardando la información",
@@ -312,8 +291,10 @@ const upload = async () => {
       color: "primary",
       icon: "i-lucide-check",
     });
-    router.push(`/mods/${mod_info.value.slug}`);
+    window.location.reload();
+    window.open(`https://new.dokidokispanish.club/mods/${mod_info.value.slug}`);
   } else {
+    showGif.value = false;
     toast.add({
       title: "error",
       description: String(response.message),
@@ -322,6 +303,16 @@ const upload = async () => {
     });
   }
 };
+
+watch(
+  () => mod_info.value.tipo,
+  (newValue) => {
+    traductores_register.value = [];
+    creators_no_register.value = [];
+    creators_register.value = [];
+    traductores_no_register.value = [];
+  }
+);
 </script>
 
 <template>
@@ -352,12 +343,10 @@ const upload = async () => {
             />
           </UFormField>
           <UFormField label="Descripción" size="xl">
-            <UTextarea
-              color="info"
-              v-model="mod_info.descripcion"
-              autoresize
-              class="w-full"
-              :maxlength="1000"
+            <QuillEditor
+              contentType="html"
+              placeholder="Tu descripción aquí"
+              v-model:content="mod_info.descripcion"
             />
           </UFormField>
           <UFormField label="Tipo de mod" size="xl">
@@ -529,66 +518,66 @@ const upload = async () => {
 
       <template #credits>
         <section class="fl_column glass_card">
-          <UAccordion :items="itemAccordion">
-            <template #user>
-              <UFormField label="Creador(es)" size="xl">
-                <UInputMenu
-                  color="info"
-                  v-model="creators_register"
-                  :items="optionsForSelects.people"
-                  multiple
-                  class="w-full"
-                />
-              </UFormField>
-            </template>
-            <template #userno>
-              <UFormField
-                label="Creador(es)"
-                size="xl"
-                hint="Coloca uno o más nombres"
-              >
-                <UInputTags
-                  color="info"
-                  v-model="creators_no_register"
-                  class="w-full"
-                />
-              </UFormField>
-            </template>
-            <template #trad>
-              <UFormField label="Traductor(es)" size="xl">
-                <UInputMenu
-                  color="info"
-                  v-model="traductores_register"
-                  :items="optionsForSelects.people"
-                  multiple
-                  class="w-full"
-                />
-              </UFormField>
-            </template>
-            <template #tradno>
-              <UFormField
-                label="Traductor(es)"
-                size="xl"
-                hint="Coloca uno o más nombres"
-              >
-                <UInputTags
-                  color="info"
-                  v-model="traductores_no_register"
-                  class="w-full"
-                />
-              </UFormField>
-            </template>
-            <template #port v-if="mod_info.android.trim() !== ''">
-              <UFormField label="Selecciona el porteador de la lista" size="xl">
-                <UInputMenu
-                  color="info"
-                  v-model="mod_info.id_porteador"
-                  :items="optionsForSelects.people"
-                  class="w-full"
-                />
-              </UFormField>
-            </template>
-          </UAccordion>
+          <details class="fl_column" open>
+            <summary>Creadores</summary>
+            <UFormField label="Creador(es)" size="xl">
+              <UInputMenu
+                color="info"
+                v-model="creators_register"
+                :items="optionsForSelects.people"
+                multiple
+                class="w-full"
+              />
+            </UFormField>
+            <USeparator label="No registrados" style="margin-top: 16px" />
+            <UFormField
+              label="Creador(es)"
+              size="xl"
+              hint="Coloca uno o más nombres"
+            >
+              <UInputTags
+                color="info"
+                v-model="creators_no_register"
+                class="w-full"
+              />
+            </UFormField>
+          </details>
+          <details v-if="mod_info.tipo === 1" class="fl_column" open>
+            <summary>Traductores</summary>
+            <UFormField label="Traductor(es)" size="xl">
+              <UInputMenu
+                color="info"
+                v-model="traductores_register"
+                :items="optionsForSelects.people"
+                multiple
+                class="w-full"
+              />
+            </UFormField>
+            <USeparator label="No registrados" style="margin-top: 16px" />
+            <UFormField
+              label="Traductor(es)"
+              size="xl"
+              hint="Coloca uno o más nombres"
+            >
+              <UInputTags
+                color="info"
+                v-model="traductores_no_register"
+                class="w-full"
+              />
+            </UFormField>
+          </details>
+          <details v-if="mod_info.android.trim() !== ''" open>
+            <summary>Ports</summary>
+            <UFormField label="Selecciona el porteador de la lista" size="xl">
+              <UInputMenu
+                color="info"
+                v-model="mod_info.id_porteador"
+                value-key="id"
+                :items="optionsForSelects.people"
+                class="w-full"
+              />
+            </UFormField>
+          </details>
         </section>
       </template>
 
@@ -798,7 +787,7 @@ const upload = async () => {
         </section>
       </template>
       <template #finish>
-        <section class="glass_card fl_start">
+        <section class="glass_card fl_column">
           <UButton
             @click="upload"
             class="w-full"
@@ -807,6 +796,18 @@ const upload = async () => {
             color="success"
             >Subir Mod</UButton
           >
+          <figure
+            class="fl_column"
+            style="width: 100%; align-items: center"
+            v-if="showGif"
+          >
+            <img
+              src="https://new.dokidokispanish.club/images/cute-monika.gif"
+              width="300"
+              alt=""
+            />
+            <figcaption>¡Gracias por tu aporte! ❤️</figcaption>
+          </figure>
         </section>
       </template>
     </UStepper>
