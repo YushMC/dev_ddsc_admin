@@ -613,12 +613,11 @@ watch(
             />
           </UFormField>
           <UFormField label="Descripción" size="xl">
-            <UTextarea
-              color="info"
-              v-model="mod_info.descripcion"
-              autoresize
-              class="w-full"
-              :maxlength="1000"
+            <QuillEditor
+              contentType="html"
+              toolbar="essential"
+              placeholder="Tu descripción aquí"
+              v-model:content="mod_info.descripcion"
             />
           </UFormField>
           <UFormField label="Tipo de mod" size="xl">
