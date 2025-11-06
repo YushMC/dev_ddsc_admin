@@ -10,6 +10,9 @@ const {
   updateImages,
   addSaga,
 } = useModUpdate();
+import DOMPurify from "dompurify";
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 const toast = useToast();
 const route = useRoute().query.slug;
 const itemsBread = ref<any[]>([]);
@@ -282,7 +285,12 @@ onBeforeMount(async () => {
     <section class="fl_between">
       <div class="glass_card fl_column">
         <UFormField label="Editar Descripción" size="xl">
-          <UTextarea v-model="data_mod.descripcion" :rows="12" class="w-full" />
+          <QuillEditor
+            contentType="html"
+            toolbar="essential"
+            placeholder="Tu descripción aquí"
+            v-model:content="data_mod.descripcion"
+          />
         </UFormField>
         <UButton
           size="xl"
@@ -460,7 +468,6 @@ onBeforeMount(async () => {
             layout="list"
             color="primary"
             description="PNG o JPG (max. 2MB)"
-            disabled
           />
         </UFormField>
         <UButton size="xl" icon="i-lucide-save" color="neutral" disabled
@@ -513,7 +520,6 @@ onBeforeMount(async () => {
               :items="optionsForSelects.sagas"
               autoresize
               class="w-full"
-              :disabled="options_all_selected.saga !== 0"
             />
           </UFormField>
         </div>

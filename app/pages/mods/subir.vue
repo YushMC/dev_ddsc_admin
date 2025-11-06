@@ -345,6 +345,7 @@ watch(
           <UFormField label="Descripción" size="xl">
             <QuillEditor
               contentType="html"
+              toolbar="essential"
               placeholder="Tu descripción aquí"
               v-model:content="mod_info.descripcion"
             />
