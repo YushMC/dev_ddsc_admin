@@ -13,7 +13,7 @@ interface reponse {
   verificado: boolean;
   activo: boolean;
 }
-
+const { navigation_pages } = useNavigation();
 const all_users = ref<reponse[]>([]);
 const globalFilter = ref();
 const api_url = useRuntimeConfig().public.api_url;
@@ -159,13 +159,12 @@ const itemsBread = ref([
 ]);
 
 const pagination = ref({
-  pageIndex: 1,
   pageSize: 10,
 });
 
 // elementos visibles en la página actual
 const paginatedItems = computed(() => {
-  const start = (pagination.value.pageIndex - 1) * pagination.value.pageSize;
+  const start = (navigation_pages.value.users - 1) * pagination.value.pageSize;
   const end = start + pagination.value.pageSize;
   return all_users.value.slice(start, end);
 });
@@ -208,7 +207,7 @@ onBeforeMount(async () => {
     </div>
     <div class="flex justify-center border-t border-default pt-4">
       <UPagination
-        v-model:page="pagination.pageIndex"
+        v-model:page="navigation_pages.users"
         :total="all_users.length"
         :sibling-count="1"
         :items-per-page="pagination.pageSize"
@@ -221,7 +220,6 @@ onBeforeMount(async () => {
       class="flex-1"
       sticky
       v-model:global-filter="globalFilter"
-      v-model:pagination="pagination"
     >
     </UTable>
   </div>
