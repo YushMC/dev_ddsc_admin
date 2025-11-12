@@ -470,9 +470,7 @@ onBeforeMount(async () => {
             description="PNG o JPG (max. 2MB)"
           />
         </UFormField>
-        <UButton size="xl" icon="i-lucide-save" color="neutral" disabled
-          >Subir</UButton
-        >
+        <UButton size="xl" icon="i-lucide-save" color="neutral">Subir</UButton>
       </div>
     </section>
     <USeparator label="Categorias" />
