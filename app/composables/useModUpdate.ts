@@ -329,6 +329,44 @@ export const useModUpdate = () => {
     }
   };
 
+  const updateCapturas = async (data: File[], id: number) => {
+    try {
+      const formData = new FormData();
+      data.forEach((file: File) => {
+        formData.append("capturas[]", file); // ← con corchetes, PHP ya lo entiende como array
+      });
+      const reponse = await $fetch<{ message: string }>(
+        `${api_url}/mod/${id}/update-screens-page`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: token_original.value,
+          },
+          body: formData,
+        }
+      );
+      return { sucess: true, message: reponse.message };
+    } catch (error: any) {
+      let msg = "Error desconocido";
+
+      // Si viene como string JSON
+      if (typeof error?.data === "string") {
+        try {
+          const parsed = JSON.parse(error.data);
+          msg = parsed.error ?? msg;
+        } catch {
+          msg = error.data;
+        }
+      }
+
+      // Si viene ya como objeto
+      else if (typeof error?.data === "object" && error?.data?.error) {
+        msg = error.data.error;
+      }
+      return { sucess: false, message: msg };
+    }
+  };
+
   const addSaga = async (id: number, data: any) => {
     try {
       const reponse = await $fetch<{ message: string }>(
@@ -376,6 +414,7 @@ export const useModUpdate = () => {
     updatePutAlls,
     updateCategories,
     updateImages,
+    updateCapturas,
     addSaga,
   };
 };

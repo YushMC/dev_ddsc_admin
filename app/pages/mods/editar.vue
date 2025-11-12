@@ -8,6 +8,7 @@ const {
   updatePutAlls,
   updateCategories,
   updateImages,
+  updateCapturas,
   addSaga,
 } = useModUpdate();
 import DOMPurify from "dompurify";
@@ -88,7 +89,17 @@ const showMessage = (response: { sucess: boolean; message: string }) => {
   }
 };
 
+const showUpoloadToast = () => {
+  toast.add({
+    title: "Procesando",
+    description: "Se esta guardando la información",
+    color: "info",
+    icon: "i-lucide-clock",
+  });
+};
+
 const changeDescription = async () => {
+  showUpoloadToast();
   const response = await updatePutAlls(
     1,
     data_mod.value.descripcion,
@@ -98,6 +109,7 @@ const changeDescription = async () => {
 };
 
 const changeStatus = async () => {
+  showUpoloadToast();
   const response = await updatePutAlls(
     2,
     options_all_selected.value.estado,
@@ -107,11 +119,13 @@ const changeStatus = async () => {
 };
 
 const changePc = async () => {
+  showUpoloadToast();
   const response = await updatePutAlls(3, data_mod.value.pc, data_mod.value.id);
   showMessage(response);
 };
 
 const changeAndroid = async () => {
+  showUpoloadToast();
   const response = await updatePutAlls(
     4,
     data_mod.value.android,
@@ -121,6 +135,7 @@ const changeAndroid = async () => {
 };
 
 const changeNSFW = async () => {
+  showUpoloadToast();
   const response = await updatePutAlls(
     5,
     data_mod.value.isNSFW,
@@ -130,6 +145,7 @@ const changeNSFW = async () => {
 };
 
 const changeFocus = async () => {
+  showUpoloadToast();
   const response = await updatePutAlls(
     6,
     options_all_selected.value.personaje,
@@ -139,6 +155,7 @@ const changeFocus = async () => {
 };
 
 const changeDuration = async () => {
+  showUpoloadToast();
   const response = await updatePutAlls(
     7,
     options_all_selected.value.duracion,
@@ -148,6 +165,7 @@ const changeDuration = async () => {
 };
 
 const changeActive = async () => {
+  showUpoloadToast();
   const response = await updatePutAlls(
     8,
     data_mod.value.isPublic,
@@ -157,6 +175,7 @@ const changeActive = async () => {
 };
 
 const updateCategory = async () => {
+  showUpoloadToast();
   const response = await updateCategories(
     options_all_selected.value.categorias ?? []
   );
@@ -165,6 +184,7 @@ const updateCategory = async () => {
 
 const changeLogo = async () => {
   if (!options_all_selected.value.logo) return;
+  showUpoloadToast();
   const response = await updateImages(
     1,
     options_all_selected.value.logo,
@@ -175,6 +195,7 @@ const changeLogo = async () => {
 
 const changePortada = async () => {
   if (!options_all_selected.value.portada) return;
+  showUpoloadToast();
   const response = await updateImages(
     2,
     options_all_selected.value.portada,
@@ -183,7 +204,24 @@ const changePortada = async () => {
   showMessage(response);
 };
 
+const changeCpaturas = async () => {
+  if (
+    !(
+      options_all_selected.value.capturas &&
+      options_all_selected.value.capturas.length > 0
+    )
+  )
+    return;
+  showUpoloadToast();
+  const response = await updateCapturas(
+    options_all_selected.value.capturas,
+    data_mod.value.id
+  );
+  showMessage(response);
+};
+
 const addNewSaga = async () => {
+  showUpoloadToast();
   const response = await addSaga(data_mod.value.id, options_all_selected.value);
   showMessage(response);
 };
@@ -470,7 +508,13 @@ onBeforeMount(async () => {
             description="PNG o JPG (max. 2MB)"
           />
         </UFormField>
-        <UButton size="xl" icon="i-lucide-save" color="neutral">Subir</UButton>
+        <UButton
+          size="xl"
+          icon="i-lucide-save"
+          color="neutral"
+          @click="changeCpaturas"
+          >Subir</UButton
+        >
       </div>
     </section>
     <USeparator label="Categorias" />
